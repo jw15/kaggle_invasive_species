@@ -2,13 +2,15 @@
 example cnn from kaggle
 '''
 
+import os
+ # floatX=float32,device=cuda0, optimizer=fast_compile"
+
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import cv2
 import math
 from glob import glob
-import os
 from multiprocessing import Pool, cpu_count
 
 from keras.models import Sequential, Model, load_model
@@ -17,6 +19,8 @@ from keras import optimizers
 from keras.layers import Dropout, Flatten, Dense
 from keras.preprocessing.image import ImageDataGenerator
 from keras.callbacks import ModelCheckpoint
+
+os.environ["THEANO_FLAGS"] = "mode=FAST_RUN, device=cuda, assert_no_cpu_op=True"
 
 data = np.load('224.npz')
 x = data['x']
@@ -66,7 +70,7 @@ model.compile(loss='binary_crossentropy', optimizer=optimizers.SGD(lr=1e-4, mome
 model.summary()
 
 batch_size = 32
-epochs = 50
+epochs = 1
 train_datagen = ImageDataGenerator(
         rotation_range=30,
         width_shift_range=0.1,
@@ -93,7 +97,7 @@ test_images /= 255
 
 predictions = model.predict(test_images)
 
-sample_submission = pd.read_csv("../input/sample_submission.csv")
+sample_submission = pd.read_csv("sample_submission.csv")
 
 for i, name in enumerate(test_names):
     sample_submission.loc[sample_submission['name'] == name, 'invasive'] = predictions[i]
