@@ -20,7 +20,7 @@ from keras.layers import Dropout, Flatten, Dense
 from keras.preprocessing.image import ImageDataGenerator
 from keras.callbacks import ModelCheckpoint
 
-os.environ["THEANO_FLAGS"] = "mode=FAST_RUN, device=cuda, assert_no_cpu_op=True"
+os.environ["THEANO_FLAGS"] = "device=cuda, assert_no_cpu_op=True"
 
 data = np.load('224.npz')
 x = data['x']
@@ -69,7 +69,7 @@ model = Model(inputs=base_model.input, outputs=add_model(base_model.output))
 model.compile(loss='binary_crossentropy', optimizer=optimizers.SGD(lr=1e-4, momentum=0.9), metrics=['accuracy'])
 model.summary()
 
-batch_size = 32
+batch_size = 26
 epochs = 1
 train_datagen = ImageDataGenerator(
         rotation_range=30,
