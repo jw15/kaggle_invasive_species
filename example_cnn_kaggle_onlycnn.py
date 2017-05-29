@@ -56,7 +56,7 @@ x_test = x_test.astype('float32')
 x_train /= 255
 x_test /= 255
 
-# User keras pre-trained VGG16
+# Use keras pre-trained VGG16
 # def cnn_model():
 img_rows, img_cols, img_channel = 224, 224, 3
 

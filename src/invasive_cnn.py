@@ -43,20 +43,19 @@ def my_image_resize(basewidth, root, resized_root):
                 hsize = int((float(img.size[1]) * float(wpercent)))
                 img = img.resize((basewidth, hsize), PIL.Image.ANTIALIAS)
                 img.save('{}/{}_resized.png'.format(resized_root, name[:-4]))
-#
-# def image_categories(resized_root):
-#     ''' A dictionary that stores the image path name and flower species for each image
-#     Input: image path names (from root directory)
-#     Output: dictionary 'categories'
-#     '''
-#     flower_dict = {}
-#     files = [f for f in listdir(resized_root) if isfile(join(resized_root, f))]
-#     for name in files:
-#         img_path = '{}/{}'.format(resized_root, name)
-#         img_cat = re.sub("\d+", "", name).rstrip('_resized.png')
-#         img_cat = img_cat[:-3]
-#         flower_dict[img_path] = img_cat
-#     return flower_dict
+
+def centering_image(img):
+    size = [256,256]
+
+    img_size = img.shape[:2]
+
+    # centering
+    row = (size[1] - img_size[0]) // 2
+    col = (size[0] - img_size[1]) // 2
+    resized = np.zeros(list(size) + [img.shape[2]], dtype=np.uint8)
+    resized[row:(row + img.shape[0]), col:(col + img.shape[1])] = img
+
+    return resized
 
 def my_train_test_split(resized_root_train, y):
     X = []
@@ -103,7 +102,7 @@ def convert_to_binary_class_matrices(y_train, y_test, nb_classes):
 
 def cnn_model(nb_filters, kernel_size, batch_size, nb_epoch, X_test, Y_test, X_train, Y_train):
     model = Sequential()
-    model.add(Convolution2D(nb_filters, (kernel_size[0], kernel_size[1]),
+    model.add(Convolution2D(32, (kernel_size[0], kernel_size[1]),
                             border_mode='valid',
                             input_shape=(img_rows, img_cols, 3)))
     model.add(Activation('relu'))
