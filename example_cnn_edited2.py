@@ -117,13 +117,15 @@ def train_validation_split(saved_arr):
     data = np.load(saved_arr)
     x = data['x']
     y = data['y']
+    test_images = data['test_images']
+    test_names = data['test_names']
     X_train, X_test, y_train, y_test = train_test_split(x, y)
     print('X_train: {} \ny_train: {} \nX_test: {} \ny_test: {}'.format(X_train.shape, y_train.shape, X_test.shape, y_test.shape))
     X_train = X_train.astype('float32')
     X_test = X_test.astype('float32')
     X_train /= 255
     X_test /= 255
-    return X_train, X_test, y_train, y_test
+    return X_train, X_test, y_train, y_test, test_images, test_names
 
 # Use keras pre-trained VGG16
 def cnn_model_vgg16(x_train, x_test, y_train, y_test, batch_size=22, epochs=1, input_shape=(224,224,3)):
@@ -184,7 +186,7 @@ if __name__ == '__main__':
 
     # saved_arr = save_images_labels('224.npz', x=train_images, y=train_y, test_images=test_images, test_names=test_names)
     saved_arr = '224.npz'
-    X_train, X_test, y_train, y_test = train_validation_split(saved_arr)
+    X_train, X_test, y_train, y_test, test_images, test_names = train_validation_split(saved_arr)
     predictions = cnn_model_vgg16(X_train, X_test, y_train, y_test, batch_size=26, epochs=1, input_shape=(224,224,3))
     make_submission('sample_submission.csv', test_names, predictions)
 
