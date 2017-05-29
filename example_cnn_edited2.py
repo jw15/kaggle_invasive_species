@@ -164,15 +164,15 @@ def cnn_model_vgg16(x_train, x_test, y_train, y_test, batch_size=22, epochs=1, i
 #     '''
 #     Output: model predictions
 #     '''
-    test_images = test_images.astype('float32')
-    test_images /= 255
-    predictions = model.predict(test_images)
+    t_images = test_images.astype('float32')
+    t_images /= 255
+    predictions = model.predict(t_images)
     return predictions
 
-def make_submission(test_labels, test_names, predictions):
+def make_submission(sample_submission, test_names, predictions):
     for i, name in enumerate(test_names):
-        test_labels.loc[test_labels['name'] == name, 'invasive'] = predictions[i]
-    test_labels.to_csv("submit.csv", index=False)
+        sample_submission.loc[sample_submission['name'] == name, 'invasive'] = predictions[i]
+    sample_submission.to_csv("submit.csv", index=False)
 
 
 if __name__ == '__main__':
@@ -187,8 +187,9 @@ if __name__ == '__main__':
     # saved_arr = save_images_labels('224.npz', x=train_images, y=train_y, test_images=test_images, test_names=test_names)
     saved_arr = '224.npz'
     X_train, X_test, y_train, y_test, test_images, test_names = train_validation_split(saved_arr)
-    predictions = cnn_model_vgg16(X_train, X_test, y_train, y_test, batch_size=26, epochs=1, input_shape=(224,224,3))
-    make_submission('sample_submission.csv', test_names, predictions)
+    predictions = cnn_model_vgg16(X_train, X_test, y_train, y_test, batch_size=16, epochs=50, input_shape=(224,224,3))
+    sample_submission = pd.read_csv("sample_submission.csv")
+    make_submission(sample_submission, test_names, predictions)
 
 
     '''
